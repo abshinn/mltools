@@ -20,3 +20,16 @@ def descent(X, y, theta, alpha, num_iters):
         theta = theta.sub((alpha * X.T.dot(Xtheta_minus_y) / m).squeeze(), axis = 0)
         J_history[ii] = cost(X, y, theta)
     return (theta, J_history)
+
+def featureNormalize(X):
+    """normalize X"""
+    X_norm = X
+    mu = X_norm.mean()
+    sigma = X_norm.std()
+    X_norm = X_norm - mu
+    X_norm = X_norm/sigma
+    X_norm = X_norm.fillna(1.0) # warning! - fix this so it only fills NaNs in first column
+    return (X_norm, mu, sigma)
+    
+
+    
