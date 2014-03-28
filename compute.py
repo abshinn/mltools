@@ -33,3 +33,8 @@ def featureNormalize(X):
     X_norm = X_norm/sigma
     X_norm[:,0] = 1. # leave intercept column unaffected by normalization
     return (X_norm, mu, sigma)
+
+def normalEqn(X, y):
+    """the normal equation, returns theta"""
+    theta = np.dot(np.dot(np.linalg.inv(X.T.dot(X)), X.T), y)
+    return theta

@@ -37,5 +37,8 @@ print("Initial cost: J = {}".format(compute.cost(X, y, theta)))
 theta, J_history = compute.descent(X, y, theta, alpha, iterations)
 print("Theta found using gradient decent: {}".format(theta))
 
+# ----------- Normal Equation ------------
+theta = compute.normalEqn(X, y)
+print("Theta found using normal equation: {}".format(theta))
 
 # ----------- Plots -----------
