@@ -8,4 +8,5 @@ TODO:
 - write plot routines in ggplot
 - add logistic regression (classification) methods and example
 - add advanced linear regression methods
+- organize regression/classification methods into different modules
 - write mltools methods in R
