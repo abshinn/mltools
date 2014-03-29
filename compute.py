@@ -12,7 +12,7 @@ def cost(X, y, theta):
     m = len(y)
     Xtheta_minus_y = X * theta - y
     J = Xtheta_minus_y.T * Xtheta_minus_y / (2*m)
-    return J
+    return J[0,0] # return single value
 
 def descent(X, y, theta, alpha, num_iters):
     """compute gradient descent (one variable)"""
@@ -32,7 +32,6 @@ def featureNormalize(X):
     sigma = X_norm.std(axis = 0)
     X_norm = X_norm - mu
     X_norm = X_norm/sigma
-    X_norm[:,0] = 1. # leave intercept column unaffected by normalization
     return (X_norm, mu, sigma)
 
 def normalEqn(X, y):

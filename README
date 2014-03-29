@@ -2,11 +2,10 @@ Machine Learning Tools
 
 Purpose: to provide simple ML algorithm coding examples using Python and R
 
-To do:
-- clean up python example 1 scatter plot (clunky array conversions)
-- write plot routines in ggplot
+TODO:
 - use R's mtcars data set to predict MPG given cyl and displ
 - contour plot of the cost function in 1D linear
-- add logistic regression methods and example
+- write plot routines in ggplot
+- add logistic regression (classification) methods and example
 - add advanced linear regression methods
 - write mltools methods in R

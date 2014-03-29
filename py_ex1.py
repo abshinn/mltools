@@ -7,6 +7,9 @@ import compute
 import matplotlib.pyplot as plt
 import pdb # debugging
 
+# set print precision
+np.set_printoptions(precision = 3)
+
 # use pandas to read in csv
 data = pd.read_csv('data_ex1.txt', header = None)
 
@@ -28,17 +31,20 @@ iterations = 1500
 alpha = 0.01
 
 # compute initial cost
-print("Initial cost: J = {}".format(compute.cost(X, y, theta)))
+print("Initial cost: J = {:.3f}".format(compute.cost(X, y, theta)))
 
 # compute gradient descent
 theta, J_history = compute.descent(X, y, theta, alpha, iterations)
-print("Theta found using gradient decent: {}".format(theta))
+print("Theta found using gradient decent: {}".format(theta.T))
+
+# compute final cost
+print("Final cost: J = {:.3f}".format(J_history[-1]))
 
 # ----------- Plots -----------
 # matplotlib line and fit
 plt.figure(1)
-plt.scatter(np.array(X[:,1]), np.array(y))
-plt.plot(np.array(X[:,1]), np.array(X*theta), "r-")
+plt.scatter(X[:,1].A, y.A)
+plt.plot(X[:,1].A, (X*theta).A, "r-")
 plt.ylabel("y")
 plt.xlabel("x")
 

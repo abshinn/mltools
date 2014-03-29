@@ -7,6 +7,9 @@ import compute
 import matplotlib.pyplot as plt
 import pdb
 
+# set print precision
+np.set_printoptions(precision = 3)
+
 # use pandas to read in csv
 data = pd.read_csv('data_ex2.txt', header = None)
 
@@ -14,7 +17,8 @@ data = pd.read_csv('data_ex2.txt', header = None)
 y = np.matrix(data.values[:,-1]).T
 X = np.matrix(data.values[:,0:-1])
 
-length = len(y)
+# normalize features
+X, mu, sigma = compute.featureNormalize(X)
 
 # add x0, all set to 1
 X = compute.addx0(X)
@@ -22,24 +26,22 @@ X = compute.addx0(X)
 # initialize fitting parameters, array of 0's
 theta = np.matrix(np.zeros(X.shape[1])).T
 
-# normalize features
-X, mu, sigma = compute.featureNormalize(X)
-
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters
-iterations = 1500
-alpha = 0.01
+iterations = 50
+alpha = 0.1
 
 # compute initial cost
 print("Initial cost: J = {}".format(compute.cost(X, y, theta)))
 
 # compute gradient descent
 theta, J_history = compute.descent(X, y, theta, alpha, iterations)
-print("Theta found using gradient decent: {}".format(theta.T))
+print("Cost, theta found using gradient decent: {:.3f}, {}".format(J_history[-1], theta.T))
 
 # ----------- Normal Equation ------------
 theta = compute.normalEqn(X, y)
-print("Theta found using normal equation: {}".format(theta.T))
+J_final = compute.cost(X, y, theta)
+print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta.T))
 
 # ----------- Plots -----------
 # J history
