@@ -11,8 +11,8 @@ import pdb # debugging
 data = pd.read_csv('data_ex1.txt', header = None)
 
 # assume data is formated such that y is the last column
-y = data.values[:,-1]
-X = data.values[:,0:-1]
+y = np.matrix(data.values[:,-1]).T
+X = np.matrix(data.values[:,0:-1])
 
 length = len(y)
 
@@ -20,7 +20,7 @@ length = len(y)
 X = compute.addx0(X)
 
 # initialize fitting parameters, array of 0's
-theta = np.zeros(X.shape[1])
+theta = np.matrix(np.zeros(X.shape[1])).T
 
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters
@@ -34,12 +34,11 @@ print("Initial cost: J = {}".format(compute.cost(X, y, theta)))
 theta, J_history = compute.descent(X, y, theta, alpha, iterations)
 print("Theta found using gradient decent: {}".format(theta))
 
-
 # ----------- Plots -----------
 # matplotlib line and fit
 plt.figure(1)
-plt.scatter(X[:,1], y)
-plt.plot(X[:,1], X.dot(theta), "r-")
+plt.scatter(np.array(X[:,1]), np.array(y))
+plt.plot(np.array(X[:,1]), np.array(X*theta), "r-")
 plt.ylabel("y")
 plt.xlabel("x")
 

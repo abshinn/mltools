@@ -11,8 +11,8 @@ import pdb
 data = pd.read_csv('data_ex2.txt', header = None)
 
 # assume data is formated such that y is the last column
-y = data.values[:,-1]
-X = data.values[:,0:-1]
+y = np.matrix(data.values[:,-1]).T
+X = np.matrix(data.values[:,0:-1])
 
 length = len(y)
 
@@ -20,7 +20,7 @@ length = len(y)
 X = compute.addx0(X)
 
 # initialize fitting parameters, array of 0's
-theta = np.zeros(X.shape[1])
+theta = np.matrix(np.zeros(X.shape[1])).T
 
 # normalize features
 X, mu, sigma = compute.featureNormalize(X)
@@ -35,10 +35,17 @@ print("Initial cost: J = {}".format(compute.cost(X, y, theta)))
 
 # compute gradient descent
 theta, J_history = compute.descent(X, y, theta, alpha, iterations)
-print("Theta found using gradient decent: {}".format(theta))
+print("Theta found using gradient decent: {}".format(theta.T))
 
 # ----------- Normal Equation ------------
 theta = compute.normalEqn(X, y)
-print("Theta found using normal equation: {}".format(theta))
+print("Theta found using normal equation: {}".format(theta.T))
 
 # ----------- Plots -----------
+# J history
+plt.figure(1)
+plt.plot(J_history)
+plt.ylabel("J")
+plt.title("alpha = {}".format(alpha))
+
+plt.show()
