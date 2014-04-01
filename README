@@ -3,8 +3,6 @@ Machine Learning Tools
 Purpose: to provide simple ML algorithm coding examples using Python and R
 
 TODO:
-- use R's mtcars data set to predict MPG given cyl and displ
-  (now provided in 1D example, next, use in multivariate example)
 - implement regularization
 - automatically plot each X variable with y, along with fitted line
   in multivariate example (is this useful/possible?)

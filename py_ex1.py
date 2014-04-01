@@ -2,25 +2,22 @@
 """mltools linear regression example 1 script; single variable gradient descent with numpy"""
 
 import numpy  as np
-import pandas as pd
+#import pandas as pd
 import compute
-import ggplot as gg
+from ggplot import mtcars
 import matplotlib.pyplot as plt
 import pdb # debugging
 
 # set print precision
 np.set_printoptions(precision = 3)
 
-# use pandas to read in csv
-#data = pd.read_csv('data_ex1.txt', header = None)
-
 # example for handpicking from a pandas column:
 #y = np.matrix(data.values[:,-1]).T
 #X = np.matrix(data.values[:,0:-1])
 
 # let us pick mpg to be y so that we can use regression to guess the mpg given cyl
-X = np.mat(gg.mtcars.cyl.values).T
-y = np.mat(gg.mtcars.mpg.values).T
+X = np.mat(mtcars.cyl.values, dtype = float).T
+y = np.mat(mtcars.mpg.values, dtype = float).T
 
 length = len(y)
 
