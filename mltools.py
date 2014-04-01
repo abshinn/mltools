@@ -34,8 +34,10 @@ def featureNormalize(X):
     X_norm = X_norm/sigma
     return (X_norm, mu, sigma)
 
-def normalEqn(X, y):
+def normalEqn(X, y, lreg = 0.):
     """the normal equation, returns theta"""
-    theta = np.dot(np.dot(np.linalg.inv(X.T.dot(X)), X.T), y)
-    theta = (X.T * X).I * X.T * y
+    # theta = (X.T*X - lambda*regIdentity).I * X.T * y
+    I = np.eye(X.shape[1])
+    I[0,0] = 0.
+    theta = (X.T*X - lreg*I).I * X.T * y
     return theta

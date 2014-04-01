@@ -25,7 +25,7 @@ length = len(y)
 X = mltools.addx0(X)
 
 # initialize fitting parameters, array of 0's
-theta = np.matrix(np.zeros(X.shape[1])).T
+theta = np.mat(np.zeros(X.shape[1])).T
 
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters

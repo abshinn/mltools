@@ -26,7 +26,7 @@ X, mu, sigma = mltools.featureNormalize(X)
 X = mltools.addx0(X)
 
 # initialize fitting parameters, array of 0's
-theta = np.matrix(np.zeros(X.shape[1])).T
+theta = np.mat(np.zeros(X.shape[1])).T
 
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters
@@ -41,7 +41,7 @@ theta, J_history = mltools.descent(X, y, theta, alpha, iterations)
 print("Cost, theta found using gradient decent: {:.3f}, {}".format(J_history[-1], theta.T))
 
 # ----------- Normal Equation ------------
-theta = mltools.normalEqn(X, y)
+theta = mltools.normalEqn(X, y, lreg = 1.)
 J_final = mltools.cost(X, y, theta)
 print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta.T))
 
