@@ -3,7 +3,7 @@
 
 import numpy  as np
 #import pandas as pd
-import compute
+import mltools
 from ggplot import mtcars
 import matplotlib.pyplot as plt
 import pdb # debugging
@@ -22,7 +22,7 @@ y = np.mat(mtcars.mpg.values, dtype = float).T
 length = len(y)
 
 # add x0, all set to 1
-X = compute.addx0(X)
+X = mltools.addx0(X)
 
 # initialize fitting parameters, array of 0's
 theta = np.matrix(np.zeros(X.shape[1])).T
@@ -33,10 +33,10 @@ iterations = 1500
 alpha = 0.03
 
 # compute initial cost
-print("Initial cost: J = {:.3f}".format(compute.cost(X, y, theta)))
+print("Initial cost: J = {:.3f}".format(mltools.cost(X, y, theta)))
 
 # compute gradient descent
-theta, J_history = compute.descent(X, y, theta, alpha, iterations)
+theta, J_history = mltools.descent(X, y, theta, alpha, iterations)
 print("Theta found using gradient decent: {}".format(theta.T))
 
 # compute final cost
