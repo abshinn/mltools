@@ -48,17 +48,16 @@ print("MPG for 4 cylinders: {}".format(cyl4))
 
 # ----------- Plots -----------
 # matplotlib line and fit
-plt.figure(1)
-plt.scatter(X[:,1].A, y.A)
-plt.plot(X[:,1].A, (X*theta).A, "r-")
-plt.ylabel("y")
-plt.xlabel("x")
+fig, (ax1, ax2) = plt.subplots(nrows = 2, ncols = 1)
+ax1.scatter(X[:,1].A, y.A)
+ax1.plot(X[:,1].A, (X*theta).A, "r-")
+ax1.set_ylabel("y")
+ax1.set_xlabel("x")
 
 # J history
-plt.figure(2)
-plt.plot(J_history)
-plt.ylabel("J")
-plt.title("alpha = {}".format(alpha))
+ax2.plot(J_history)
+ax2.set_ylabel("Cost Function")
+ax2.set_title("alpha = {}".format(alpha))
 
 plt.show()
 

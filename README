@@ -5,7 +5,7 @@ Purpose: to provide simple ML algorithm coding examples using Python and R
 TODO:
 - test regularizaton in normal equation
 - implement regularization in gradient descent
-- panel 1D example plots instead of having different plot windows
+- change ex1 to a logistic regression example, classifying cyl off of mpg and displ
 - contour plot of the cost function in 1D linear
 - write plot routines in ggplot as well
 - add logistic regression (classification) methods and examples

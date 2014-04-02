@@ -2,7 +2,6 @@
 """mltools linear regression example 2 script; multiple variable linear regression"""
 
 import numpy as np
-#import pandas as pd
 from ggplot import mtcars
 import mltools
 import matplotlib.pyplot as plt
@@ -41,7 +40,7 @@ theta, J_history = mltools.descent(X, y, theta, alpha, iterations)
 print("Cost, theta found using gradient decent: {:.3f}, {}".format(J_history[-1], theta.T))
 
 # ----------- Normal Equation ------------
-theta = mltools.normalEqn(X, y, lreg = 1.)
+theta = mltools.normalEqn(X, y, lreg = 10.)
 J_final = mltools.cost(X, y, theta)
 print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta.T))
 
