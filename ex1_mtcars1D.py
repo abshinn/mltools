@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """mltools linear regression example 1 script; single variable gradient descent with numpy"""
 
-import numpy  as np
-#import pandas as pd
 import mltools
-from ggplot import mtcars
+import numpy  as np
 import matplotlib.pyplot as plt
+from ggplot import mtcars
 import pdb # debugging
 
 # set print precision
@@ -47,12 +46,12 @@ cyl4 = np.mat("[1 4]") * theta
 print("MPG for 4 cylinders: {}".format(cyl4))
 
 # ----------- Plots -----------
-# matplotlib line and fit
+# scatter and best fit
 fig, (ax1, ax2) = plt.subplots(nrows = 2, ncols = 1)
 ax1.scatter(X[:,1].A, y.A)
 ax1.plot(X[:,1].A, (X*theta).A, "r-")
-ax1.set_ylabel("y")
-ax1.set_xlabel("x")
+ax1.set_ylabel("mpg")
+ax1.set_xlabel("cyl")
 
 # J history
 ax2.plot(J_history)

@@ -3,6 +3,8 @@ Machine Learning Tools
 Purpose: to provide simple ML algorithm coding examples using Python and R
 
 TODO:
+- un-normalize X in ex2 before plotting
+- make sure ex2's plots are plotting what they should be plotting
 - test regularizaton in normal equation
 - implement regularization in gradient descent
 - change ex1 to a logistic regression example, classifying cyl off of mpg and displ

@@ -40,16 +40,34 @@ theta, J_history = mltools.descent(X, y, theta, alpha, iterations)
 print("Cost, theta found using gradient decent: {:.3f}, {}".format(J_history[-1], theta.T))
 
 # ----------- Normal Equation ------------
-theta = mltools.normalEqn(X, y, lreg = 10.)
-J_final = mltools.cost(X, y, theta)
-print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta.T))
+theta_NEq = mltools.normalEqn(X, y, lreg = 0.)
+J_final = mltools.cost(X, y, theta_NEq)
+print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta_NEq.T))
 
 # ----------- Plots -----------
+# scatter and best fit
+fig, (ax1, ax2, ax3) = plt.subplots(nrows = 3, ncols = 1)
+
+# cylinder v mpg
+ax1.scatter(X[:,1].A, y.A)
+theta_cyl = theta
+theta_cyl[2] = 0.
+ax1.plot(X[:,1].A, (X*theta_cyl).A, "r-")
+ax1.set_xlabel("cyl")
+ax1.set_ylabel("mpg")
+
+# disp v mpg
+ax2.scatter(X[:,2].A, y.A)
+theta_disp = theta
+theta_disp[1] = 0.
+ax2.plot(X[:,2].A, (X*theta_disp).A, "r-")
+ax2.set_xlabel("disp")
+ax2.set_ylabel("mpg")
+
 # J history
-plt.figure(1)
-plt.plot(J_history)
-plt.ylabel("J")
-plt.title("alpha = {}".format(alpha))
+ax3.plot(J_history)
+ax3.set_ylabel("J")
+ax3.set_title("alpha = {}".format(alpha))
 
 plt.show()
 
