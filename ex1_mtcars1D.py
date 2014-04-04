@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """mltools linear regression example 1 script; single variable gradient descent with numpy"""
 
+import pdb
 import mltools
-import numpy  as np
+import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from ggplot import mtcars
-import pdb # debugging
 
 # set print precision
 np.set_printoptions(precision = 3)
@@ -24,6 +24,8 @@ X = mltools.addx0(X)
 
 # initialize fitting parameters, array of 0's
 theta = np.mat(np.zeros(X.shape[1])).T
+
+pdb.set_trace()
 
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters

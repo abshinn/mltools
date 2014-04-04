@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """mltools linear regression example 2 script; multiple variable linear regression"""
 
+import pdb
 import numpy as np
-from ggplot import mtcars
 import mltools
 import matplotlib.pyplot as plt
-import pdb
+from ggplot import mtcars
 
 # set print precision
 np.set_printoptions(precision = 3)
@@ -39,15 +39,15 @@ print("Initial cost: J = {}".format(mltools.cost(X, y, theta)))
 theta, J_history = mltools.descent(X, y, theta, alpha, iterations)
 print("Cost, theta found using gradient decent: {:.3f}, {}".format(J_history[-1], theta.T))
 
-# estimate mpg using computed gradient descent parameters
-### first column of X should not be "un-normalized"...
-#cyl4 = (sigma * np.mat("[1.0 4.0 80.0]") - mu) * theta
-#print("MPG for 4 cylinders: {}".format(cyl4))
-
 # ----------- Normal Equation ------------
 theta_NEq = mltools.normalEqn(X, y, lreg = 0.)
 J_final = mltools.cost(X, y, theta_NEq)
 print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta_NEq.T))
+
+# estimate mpg using computed gradient descent parameters
+predict = (np.mat("[4.0 80.0]") - mu) / sigma
+predict = np.c_[ 1.0, predict ] * theta_NEq
+print("MPG for 4 cylinders, disp of 80: {}".format(predict))
 
 # ----------- Plots -----------
 # scatter and best fit
