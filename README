@@ -3,14 +3,12 @@ Machine Learning Tools
 Purpose: to provide simple ML algorithm coding examples using Python and R
 
 TODO:
-- un-normalize X in ex2 before plotting
-- make sure ex2's plots are plotting what they should be plotting
+- make sure regression is correct in mtcars examples
+- add polynomial features to improve fit
 - test regularizaton in normal equation
 - implement regularization in gradient descent
 - change ex1 to a logistic regression example, classifying cyl off of mpg and displ
-- contour plot of the cost function in 1D linear
 - write plot routines in ggplot as well
-- add logistic regression (classification) methods and examples
 - add advanced linear regression methods
 - organize regression/classification methods into different modules
 - write mltools methods in R

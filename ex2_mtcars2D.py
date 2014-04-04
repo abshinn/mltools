@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """mltools linear regression example 2 script; multiple variable linear regression"""
 
 import numpy as np
@@ -38,6 +38,11 @@ print("Initial cost: J = {}".format(mltools.cost(X, y, theta)))
 # compute gradient descent
 theta, J_history = mltools.descent(X, y, theta, alpha, iterations)
 print("Cost, theta found using gradient decent: {:.3f}, {}".format(J_history[-1], theta.T))
+
+# estimate mpg using computed gradient descent parameters
+### first column of X should not be "un-normalized"...
+#cyl4 = (sigma * np.mat("[1.0 4.0 80.0]") - mu) * theta
+#print("MPG for 4 cylinders: {}".format(cyl4))
 
 # ----------- Normal Equation ------------
 theta_NEq = mltools.normalEqn(X, y, lreg = 0.)
