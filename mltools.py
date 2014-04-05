@@ -6,6 +6,10 @@ def addx0(X):
     """add column of ones to act as x0, the intercept value"""
     return np.c_[ np.ones(len(X)), X ]
 
+def addxsquare(X, col):
+    """add squared feature"""
+    return np.c_[ X, np.multiply(X[:,col],X[:,col]) ]
+
 def cost(X, y, theta):
     """compute linear regression cost function (one variable)"""
     # J = (X*theta - y)' * (X*theta - y) / 2*m
@@ -14,14 +18,14 @@ def cost(X, y, theta):
     J = Xtheta_minus_y.T * Xtheta_minus_y / (2*m)
     return J[0,0] # return single value
 
-def descent(X, y, theta, alpha, num_iters):
-    """compute gradient descent (one variable)"""
+def descent(X, y, theta, alpha, num_iters, lreg = 0.):
+    """compute gradient descent"""
     m = len(y)
     J_history = np.zeros(num_iters)
     for ii in range(num_iters):
         # theta -= alpha * X' * (X*theta - y) / m
-        Xtheta_minus_y = X * theta - y
-        theta = theta - (alpha * X.T * Xtheta_minus_y / m)
+        theta[0] = theta[0] - alpha*( X[:,0].T * (X[:,0] * theta[0] - y) )/m
+        theta[1:] = theta[1:]*(1.0 - alpha*lreg/m) - alpha*( X[:,1:].T * (X[:,1:] * theta[1:] - y) )/m
         J_history[ii] = cost(X, y, theta)
     return (theta, J_history)
 

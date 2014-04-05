@@ -19,18 +19,19 @@ np.set_printoptions(precision = 3)
 X = np.mat(mtcars.disp.values, dtype = float).T
 y = np.mat(mtcars.mpg.values, dtype = float).T
 
+# add x2, the square of x1
+#X = mltools.addxsquare(X, 0)
+
 # add x0, all set to 1
 X = mltools.addx0(X)
 
 # initialize fitting parameters, array of 0's
 theta = np.mat(np.zeros(X.shape[1])).T
 
-pdb.set_trace()
-
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters
-iterations = 200
-alpha = 0.0000003
+iterations = 100
+alpha = 0.00001
 
 # compute initial cost
 print("Initial cost: J = {:.3f}".format(mltools.cost(X, y, theta)))
@@ -49,8 +50,8 @@ print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, thet
 
 # now, let us see how well the learning algorithm did
 print("MPG for a disp of {}:  {}".format( 80, np.mat("[1  80]")*theta_NEq))
-print("MPG for a disp of {}:  {}".format(140, np.mat("[1 140]")*theta_NEq))
-print("MPG for a disp of {}:  {}".format(200, np.mat("[1 200]")*theta_NEq))
+print("MPG for a disp of {}:  {}".format(250, np.mat("[1 250]")*theta_NEq))
+print("MPG for a disp of {}:  {}".format(400, np.mat("[1 400]")*theta_NEq))
 
 # ----------- Plots -----------
 # scatter and best fit
@@ -67,10 +68,12 @@ ax2.plot(J_history)
 ax2.set_ylabel("Cost Function")
 ax2.set_title("Descent, alpha = {}".format(alpha))
 
-# cost-space contour
+#fig.tight_layout()
+
+# cost-space contour and surface plots
 # intialize thetas
-theta0_vals = np.linspace(25, 35, 100)
-theta1_vals = np.linspace( -4,  4, 100)
+theta0_vals = np.linspace(-10, 35, 100)
+theta1_vals = np.linspace( -1,  1, 100)
 
 # intialize J values
 J_vals = np.zeros((len(theta0_vals), len(theta1_vals)))
@@ -83,9 +86,15 @@ for ii in range(len(theta0_vals)):
 
 theta0_vals, theta1_vals = np.meshgrid(theta0_vals, theta1_vals)
 
-fig = plt.figure(figsize = plt.figaspect(2.0))
-ax = fig.add_subplot(1, 1, 1, projection = "3d")
+# surface plot
+fig2 = plt.figure(figsize = plt.figaspect(2.0))
+ax = fig2.add_subplot(1, 1, 1, projection = "3d")
 surf = ax.plot_surface(theta0_vals, theta1_vals, J_vals)
+
+# contour plot
+plt.figure()
+ctr = plt.contour(theta0_vals, theta1_vals, J_vals)
+plt.clabel(ctr, inline = 1, fontsize = 10)
 
 plt.show()
 
