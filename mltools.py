@@ -10,6 +10,15 @@ def addxsquare(X, col):
     """add squared feature"""
     return np.c_[ X, np.multiply(X[:,col],X[:,col]) ]
 
+def polyfeatures(X1, X2, degree = 6):
+    """build a polynomial data set from two features"""
+# NOT TESTED YET
+    X_out = np.mat(np.ones(len(X1))).T
+    for ii in range(1,degree+1):
+        for jj in range(ii):
+            X_out = np.c[  X_out, np.multiply( np.power(X1,ii-jj), np.power(X2,jj) )  ]
+    return X_out
+
 def cost(X, y, theta):
     """compute linear regression cost function (one variable)"""
     # J = (X*theta - y)' * (X*theta - y) / 2*m
