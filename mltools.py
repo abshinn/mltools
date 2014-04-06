@@ -14,8 +14,7 @@ def cost(X, y, theta):
     """compute linear regression cost function (one variable)"""
     # J = (X*theta - y)' * (X*theta - y) / 2*m
     m = len(y)
-    Xtheta_minus_y = X * theta - y
-    J = Xtheta_minus_y.T * Xtheta_minus_y / (2*m)
+    J = (X*theta - y).T * (X*theta - y) / (2*m)
     return J[0,0] # return single value
 
 def descent(X, y, theta, alpha, num_iters, lreg = 0.):
@@ -23,9 +22,11 @@ def descent(X, y, theta, alpha, num_iters, lreg = 0.):
     m = len(y)
     J_history = np.zeros(num_iters)
     for ii in range(num_iters):
-        # theta -= alpha * X' * (X*theta - y) / m
-        theta[0] = theta[0] - alpha*( X[:,0].T * (X[:,0] * theta[0] - y) )/m
-        theta[1:] = theta[1:]*(1.0 - alpha*lreg/m) - alpha*( X[:,1:].T * (X[:,1:] * theta[1:] - y) )/m
+        # matlab: theta -= alpha * X' * (X*theta - y) / m
+        # linear regularization TURNED OFF
+        #theta[0] = theta[0] - alpha*( X[:,0].T * (X[:,0] * theta[0] - y) )/m
+        #theta[1:] = theta[1:]*(1.0 - alpha*lreg/m) - alpha*( X[:,1:].T * (X[:,1:] * theta[1:] - y) )/m
+        theta = theta - alpha * ( X.T * (X*theta - y) ) / m
         J_history[ii] = cost(X, y, theta)
     return (theta, J_history)
 

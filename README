@@ -3,11 +3,10 @@ Machine Learning Tools
 Purpose: to provide simple ML algorithm coding examples using Python and R
 
 TODO:
-- make sure regression is correct in mtcars examples
-- add polynomial features to improve fit
-- test regularizaton in normal equation
-- implement regularization in gradient descent
-- change ex1 to a logistic regression example, classifying cyl off of mpg and displ
+- use feature scaling in example 1 to assist gradient descent
+- add polynomial features to improve fit in both examples
+- test regularization in both descent and the normal equation
+- add mtcars logistic regression example, classifying cyl off of mpg and displ
 - write plot routines in ggplot as well
 - add advanced linear regression methods
 - organize regression/classification methods into different modules

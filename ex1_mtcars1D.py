@@ -5,15 +5,12 @@ import pdb
 import mltools
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 from ggplot import mtcars
 
 # set print precision
 np.set_printoptions(precision = 3)
-
-# example for handpicking from a pandas column:
-#y = np.matrix(data.values[:,-1]).T
-#X = np.matrix(data.values[:,0:-1])
 
 # let us pick mpg to be y so that we can use regression to guess the mpg given disp
 X = np.mat(mtcars.disp.values, dtype = float).T
@@ -31,7 +28,7 @@ theta = np.mat(np.zeros(X.shape[1])).T
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters
 iterations = 100
-alpha = 0.00001
+alpha = 0.0000003
 
 # compute initial cost
 print("Initial cost: J = {:.3f}".format(mltools.cost(X, y, theta)))
@@ -63,7 +60,7 @@ ax1.legend(bbox_to_anchor=(1.05, 1), loc = 1, borderaxespad = 0.)
 ax1.set_ylabel("mpg")
 ax1.set_xlabel("disp")
 
-# Decent J history
+# descent J history
 ax2.plot(J_history)
 ax2.set_ylabel("Cost Function")
 ax2.set_title("Descent, alpha = {}".format(alpha))
@@ -84,23 +81,31 @@ for ii in range(len(theta0_vals)):
         t = np.mat([ theta0_vals[ii], theta1_vals[jj] ]).T
         J_vals[ii,jj] = mltools.cost(X, y, t)
 
+# J_vals needs to be transposed
+J_vals = J_vals.T
+
+# contour plot
+plt.figure()
+ctr = plt.contour(theta0_vals, theta1_vals, J_vals, np.logspace(-2, 4, 10))
+plt.clabel(ctr, inline = 1, fontsize = 10)
+plt.plot(theta_NEq[0,0], theta_NEq[1,0], 'rx', ms = 10, mew = 2)
+plt.plot(theta[0,0], theta[1,0], 'bo')
+plt.xlabel(r"$\theta_0$")
+plt.ylabel(r"$\theta_1$")
+
+# mesh grid for surface plot
 theta0_vals, theta1_vals = np.meshgrid(theta0_vals, theta1_vals)
 
 # surface plot
 fig2 = plt.figure(figsize = plt.figaspect(2.0))
 ax = fig2.add_subplot(1, 1, 1, projection = "3d")
-surf = ax.plot_surface(theta0_vals, theta1_vals, J_vals)
+surf = ax.plot_surface(theta0_vals, theta1_vals, J_vals, cmap = cm.coolwarm, antialiased = False)
 
-# contour plot
-plt.figure()
-ctr = plt.contour(theta0_vals, theta1_vals, J_vals)
-plt.clabel(ctr, inline = 1, fontsize = 10)
-
+# show plots
 plt.show()
 
 # use debug tools to explore variables and plots before script terminates
-pdb.set_trace()
+#pdb.set_trace()
 
 # Discussion
-#   Gradient descent converges, but at an incorrect local minimum. However, the normal equation
-#   comes to the rescue in this case.
+#   Gadient descent faile to find the local optimum... perhaps feature scaling could come to the rescue?
