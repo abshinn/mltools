@@ -19,7 +19,10 @@ y = np.mat(mtcars.mpg.values, dtype = float).T
 # add x2, the square of x1
 #X = mltools.addxsquare(X, 0)
 
-# add x0, all set to 1
+# normalize disp
+X, mu, sigma = mltools.featureNormalize(X)
+
+# add x0
 X = mltools.addx0(X)
 
 # initialize fitting parameters, array of 0's
@@ -27,28 +30,29 @@ theta = np.mat(np.zeros(X.shape[1])).T
 
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters
-iterations = 100
-alpha = 0.0000003
+iterations = 20 
+alpha = 0.3
+lreg = 0.0
 
 # compute initial cost
-print("Initial cost: J = {:.3f}".format(mltools.cost(X, y, theta)))
+print("Initial cost: J = {:.3f}".format(mltools.cost(X, y, theta, lreg = lreg)))
 
 # compute gradient descent
-theta, J_history = mltools.descent(X, y, theta, alpha, iterations)
+theta, J_history = mltools.descent(X, y, theta, alpha, iterations, lreg = lreg)
 print("Theta found using gradient decent: {}".format(theta.T))
 
 # display final cost
 print("Final cost: J = {:.3f}".format(J_history[-1]))
 
 # normal equation
-theta_NEq = mltools.normalEqn(X, y, lreg = 0.)
+theta_NEq = mltools.normalEqn(X, y)
 J_final = mltools.cost(X, y, theta_NEq)
 print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta_NEq.T))
 
 # now, let us see how well the learning algorithm did
-print("MPG for a disp of {}:  {}".format( 80, np.mat("[1  80]")*theta_NEq))
-print("MPG for a disp of {}:  {}".format(250, np.mat("[1 250]")*theta_NEq))
-print("MPG for a disp of {}:  {}".format(400, np.mat("[1 400]")*theta_NEq))
+print("MPG for a disp of {}:  {}".format( 80, np.mat([1, ( 80 - mu)/sigma])*theta_NEq))
+print("MPG for a disp of {}:  {}".format(250, np.mat([1, (250 - mu)/sigma])*theta_NEq))
+print("MPG for a disp of {}:  {}".format(400, np.mat([1, (400 - mu)/sigma])*theta_NEq))
 
 # ----------- Plots -----------
 # scatter and best fit
@@ -70,8 +74,8 @@ fig.set_tight_layout(True)
 
 # cost-space contour and surface plots
 # intialize thetas
-theta0_vals = np.linspace(-10, 35, 100)
-theta1_vals = np.linspace(-0.5, 0.5, 100)
+theta0_vals = np.linspace(10, 30, 100)
+theta1_vals = np.linspace(-15, 5, 100)
 
 # intialize J values
 J_vals = np.zeros((len(theta0_vals), len(theta1_vals)))
@@ -87,7 +91,7 @@ J_vals = J_vals.T
 
 # contour plot
 plt.figure()
-ctr = plt.contour(theta0_vals, theta1_vals, J_vals, np.logspace(-2, 4, 10))
+ctr = plt.contour(theta0_vals, theta1_vals, J_vals, np.logspace(-1, 2, 10))
 plt.clabel(ctr, inline = 1, fontsize = 10)
 plt.plot(theta_NEq[0,0], theta_NEq[1,0], 'rx', ms = 10, mew = 2)
 plt.plot(theta[0,0], theta[1,0], 'bo')
@@ -105,8 +109,9 @@ surf = ax.plot_surface(theta0_vals, theta1_vals, J_vals, cmap = cm.coolwarm, ant
 # show plots
 plt.show()
 
-# use debug tools to explore variables and plots before script terminates
+# use debug tools to explore variables before script terminates
 #pdb.set_trace()
 
 # Discussion
-#   Gadient descent faile to find the local optimum... perhaps feature scaling could come to the rescue?
+#   Interestingly, without featrure normalization, gradient descent fails to descend in the 
+#   direction of the optimal theta0.

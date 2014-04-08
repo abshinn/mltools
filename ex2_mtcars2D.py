@@ -21,7 +21,7 @@ y = np.mat(mtcars.mpg.values, dtype = float).T
 # normalize features
 X, mu, sigma = mltools.featureNormalize(X)
 
-# add x0, all set to 1
+# add x0
 X = mltools.addx0(X)
 
 # initialize fitting parameters, array of 0's
@@ -45,7 +45,7 @@ J_final = mltools.cost(X, y, theta_NEq)
 print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta_NEq.T))
 
 # estimate mpg using computed gradient descent parameters
-predict = (np.mat("[4.0 80.0]") - mu) / sigma
+predict = (np.mat([4.0, 80.0]) - mu) / sigma
 predict = np.c_[ 1.0, predict ] * theta_NEq
 print("MPG for 4 cylinders, disp of 80: {}".format(predict))
 
@@ -74,7 +74,11 @@ ax3.plot(J_history)
 ax3.set_ylabel("J")
 ax3.set_title("alpha = {}".format(alpha))
 
+fig.set_tight_layout(True)
 plt.show()
 
 # use debug tools to explore variables and plots before script terminates
-pdb.set_trace()
+#pdb.set_trace()
+
+# Discussion
+#   This would be a better logistic regression example, predicting cyl from disp and mpg.

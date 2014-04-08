@@ -19,11 +19,12 @@ def polyfeatures(X1, X2, degree = 6):
             X_out = np.c[  X_out, np.multiply( np.power(X1,ii-jj), np.power(X2,jj) )  ]
     return X_out
 
-def cost(X, y, theta):
+def cost(X, y, theta, lreg = 0.):
     """compute linear regression cost function (one variable)"""
     # J = (X*theta - y)' * (X*theta - y) / 2*m
     m = len(y)
-    J = (X*theta - y).T * (X*theta - y) / (2*m)
+    #J = ( (X*theta - y).T * (X*theta - y) ) / (2*m)
+    J = ( (X*theta - y).T * (X*theta - y) + lreg*(theta.T * theta) ) / (2.*m)
     return J[0,0] # return single value
 
 def descent(X, y, theta, alpha, num_iters, lreg = 0.):
@@ -32,11 +33,15 @@ def descent(X, y, theta, alpha, num_iters, lreg = 0.):
     J_history = np.zeros(num_iters)
     for ii in range(num_iters):
         # matlab: theta -= alpha * X' * (X*theta - y) / m
+        # linear regularization TURNED ON 
+        grad = theta - alpha * ( X.T * (X*theta - y) ) / m
+        temp = theta 
+        temp[0] = 0.
+        theta = grad + alpha*lreg*temp/m
         # linear regularization TURNED OFF
-        #theta[0] = theta[0] - alpha*( X[:,0].T * (X[:,0] * theta[0] - y) )/m
-        #theta[1:] = theta[1:]*(1.0 - alpha*lreg/m) - alpha*( X[:,1:].T * (X[:,1:] * theta[1:] - y) )/m
-        theta = theta - alpha * ( X.T * (X*theta - y) ) / m
+        #theta = theta - alpha * ( X.T * (X*theta - y) ) / m
         J_history[ii] = cost(X, y, theta)
+        #pdb.set_trace()
     return (theta, J_history)
 
 def featureNormalize(X):
