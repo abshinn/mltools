@@ -65,12 +65,13 @@ ax2.plot(J_history)
 ax2.set_ylabel("Cost Function")
 ax2.set_title("Descent, alpha = {}".format(alpha))
 
-#fig.tight_layout()
+# fix crowding in above plots
+fig.set_tight_layout(True)
 
 # cost-space contour and surface plots
 # intialize thetas
 theta0_vals = np.linspace(-10, 35, 100)
-theta1_vals = np.linspace( -1,  1, 100)
+theta1_vals = np.linspace(-0.5, 0.5, 100)
 
 # intialize J values
 J_vals = np.zeros((len(theta0_vals), len(theta1_vals)))
