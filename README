@@ -4,6 +4,7 @@ Purpose: to provide simple ML algorithm coding examples using Python and R
 
 TODO:
 - add mtcars logistic regression example, classifying cyl off of mpg and displ
+- organize regression/classification methods into different classes
 - test regularization in both descent and the normal equation
 - write plot routines in ggplot as well
 - add advanced linear regression methods

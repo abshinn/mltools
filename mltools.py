@@ -23,8 +23,8 @@ def cost(X, y, theta, lreg = 0.):
     """compute linear regression cost function (one variable)"""
     # J = (X*theta - y)' * (X*theta - y) / 2*m
     m = len(y)
-    #J = ( (X*theta - y).T * (X*theta - y) ) / (2*m)
-    J = ( (X*theta - y).T * (X*theta - y) + lreg*(theta.T * theta) ) / (2.*m)
+    J = ( (X*theta - y).T * (X*theta - y) ) / (2*m)
+    #J = ( (X*theta - y).T * (X*theta - y) + lreg*(theta.T * theta) ) / (2.*m)
     return J[0,0] # return single value
 
 def descent(X, y, theta, alpha, num_iters, lreg = 0.):
@@ -33,15 +33,14 @@ def descent(X, y, theta, alpha, num_iters, lreg = 0.):
     J_history = np.zeros(num_iters)
     for ii in range(num_iters):
         # matlab: theta -= alpha * X' * (X*theta - y) / m
-        # linear regularization TURNED ON 
-        grad = theta - alpha * ( X.T * (X*theta - y) ) / m
-        temp = theta 
-        temp[0] = 0.
-        theta = grad + alpha*lreg*temp/m
+        # linear regularization TURNED ON
+        #grad = theta - alpha * ( X.T * (X*theta - y) ) / m
+        #temp = theta 
+        #temp[0] = 0.
+        #theta = grad + alpha*lreg*temp/m
         # linear regularization TURNED OFF
-        #theta = theta - alpha * ( X.T * (X*theta - y) ) / m
+        theta = theta - alpha * ( X.T * (X*theta - y) ) / m
         J_history[ii] = cost(X, y, theta)
-        #pdb.set_trace()
     return (theta, J_history)
 
 def featureNormalize(X):
@@ -55,8 +54,22 @@ def featureNormalize(X):
 
 def normalEqn(X, y, lreg = 0.):
     """the normal equation, returns theta"""
-    # theta = (X.T*X - lambda*regIdentity).I * X.T * y
     I = np.eye(X.shape[1])
     I[0,0] = 0.
     theta = (X.T*X - lreg*I).I * X.T * y
     return theta
+
+def sigmoid(z):
+    """sigmoid function"""
+# NOT YET TESTED
+    return 1./(1. + np.exp(-z))
+
+def LRcost(theta, X, y, lreg = 0.):
+    """logistic regression cost function"""
+# NOT YET TESTED
+    I = np.eye(len(theta))
+    I[0,0] = 0.
+    H = sigmoid(X*theta) # hypothesis
+    J = (-y.T * np.log(H) - (1 - y).T * np.log(1 - H) + lreg*(theta[1:-1].T * theta[1:-1])/2.) / m
+    grad = (X.T * (H - y) + lreg*I*theta) / m
+    return (J, grad)
