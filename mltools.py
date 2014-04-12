@@ -10,15 +10,6 @@ def addxsquare(X, col):
     """add squared feature"""
     return np.c_[ X, np.multiply(X[:,col],X[:,col]) ]
 
-def polyfeatures(X1, X2, degree = 6):
-    """build a polynomial data set from two features"""
-# NOT TESTED YET
-    X_out = np.mat(np.ones(len(X1))).T
-    for ii in range(1,degree+1):
-        for jj in range(ii):
-            X_out = np.c[  X_out, np.multiply( np.power(X1,ii-jj), np.power(X2,jj) )  ]
-    return X_out
-
 def cost(X, y, theta, lreg = 0.):
     """compute linear regression cost function (one variable)"""
     # J = (X*theta - y)' * (X*theta - y) / 2*m
@@ -59,17 +50,29 @@ def normalEqn(X, y, lreg = 0.):
     theta = (X.T*X - lreg*I).I * X.T * y
     return theta
 
+
+def polyfeatures(X1, X2, degree = 6):
+    """build a polynomial data set from two features"""
+# NOT TESTED YET
+    X_out = np.mat(np.ones(len(X1))).T
+    for ii in range(1,degree+1):
+        for jj in range(ii):
+            X_out = np.c_[  X_out, np.multiply( np.power(X1,ii-jj), np.power(X2,jj) )  ]
+    return X_out
+
 def sigmoid(z):
     """sigmoid function"""
-# NOT YET TESTED
     return 1./(1. + np.exp(-z))
 
 def LRcost(theta, X, y, lreg = 0.):
     """logistic regression cost function"""
-# NOT YET TESTED
-    I = np.eye(len(theta))
+# TESTING
+    m, n = X.shape
+    theta = theta.reshape(n, 1)
+    theta = np.matrix(theta)
+    I = np.eye(n)
     I[0,0] = 0.
     H = sigmoid(X*theta) # hypothesis
     J = (-y.T * np.log(H) - (1 - y).T * np.log(1 - H) + lreg*(theta[1:-1].T * theta[1:-1])/2.) / m
     grad = (X.T * (H - y) + lreg*I*theta) / m
-    return (J, grad)
+    return J.flatten(), grad.flatten()
