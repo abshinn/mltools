@@ -16,9 +16,6 @@ np.set_printoptions(precision = 3)
 X = np.mat(mtcars.disp.values, dtype = float).T
 y = np.mat(mtcars.mpg.values, dtype = float).T
 
-# add x2, the square of x1
-#X = mltools.addxsquare(X, 0)
-
 # normalize disp
 X, mu, sigma = mltools.featureNormalize(X)
 
