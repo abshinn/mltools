@@ -63,7 +63,6 @@ def sigmoid(z):
 
 def LRcost(theta, X, y, rlambda = 0.):
     """logistic regression cost function"""
-# TESTING
     m, n = X.shape
     theta = np.copy(theta.reshape(n, 1))
     theta = np.matrix(theta)
