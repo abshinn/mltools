@@ -137,5 +137,5 @@ pdb.set_trace()
 #   Without featrure normalization, gradient descent fails to descend in the 
 #   direction of the optimal theta0.
 # Quadratic:
-#   Decent gets close to the optimal theta, but ultimately fails to take
+#   Descent gets close to the optimal theta, but ultimately fails to take
 #   advantage of its quadratic term...
