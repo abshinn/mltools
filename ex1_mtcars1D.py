@@ -28,7 +28,7 @@ m = len(y)
 # add x1*x1
 X = mltools.add_quadratic(X, 0)
 
-# normalize disp
+# normalize disp and disp^2
 X, mu, sigma = mltools.featureNormalize(X)
 
 # add x0
@@ -129,13 +129,17 @@ surf = ax.plot_surface(theta0_vals, theta1_vals, J_vals, cmap = cm.coolwarm, ant
 # show plots
 plt.show()
 
-# use debug tools to explore variables before script terminates
+# explore namespace
+print("Exploring namespace...\ntype [c] or [cntrl-d] to exit")
 pdb.set_trace()
 
-# Discussion
-# 1D:
-#   Without featrure normalization, gradient descent fails to descend in the 
-#   direction of the optimal theta0.
-# Quadratic:
-#   Descent gets close to the optimal theta, but ultimately fails to take
-#   advantage of its quadratic term...
+discussion = """
+Discussion
+1D:
+  Without featrure normalization, gradient descent fails to descend in the 
+  direction of the optimal theta0.
+Quadratic:
+  Descent gets close to the optimal theta, but ultimately fails to take
+  advantage of its quadratic term...
+"""
+print(discussion)
