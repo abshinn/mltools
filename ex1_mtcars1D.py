@@ -1,5 +1,11 @@
-#!/usr/bin/env python
-"""mltools linear regression example 1 script; single variable gradient descent with numpy"""
+#!/usr/bin/env python2.7
+"""
+mltools
+Machine Learning Tools
+
+Linear regression example using mtcars data set:
+    single variable (+quadratic term) gradient descent and normal equation
+"""
 
 import pdb
 import mltools
@@ -16,47 +22,63 @@ np.set_printoptions(precision = 3)
 X = np.mat(mtcars.disp.values, dtype = float).T
 y = np.mat(mtcars.mpg.values, dtype = float).T
 
+# number of examples
+m = len(y)
+
+# add x1*x1
+X = mltools.add_quadratic(X, 0)
+
 # normalize disp
 X, mu, sigma = mltools.featureNormalize(X)
 
 # add x0
-X = mltools.addx0(X)
+X = mltools.add_x0(X)
 
 # initialize fitting parameters, array of 0's
 theta = np.mat(np.zeros(X.shape[1])).T
 
 # ----------- Gradient Descent ------------
 # initialize gradient descent parameters
-iterations = 20 
-alpha = 0.3
-lreg = 0.0
+iterations = 40
+alpha = 0.4
+rlambda = 0.0
 
 # compute initial cost
-print("Initial cost: J = {:.3f}".format(mltools.cost(X, y, theta, lreg = lreg)))
+print("Initial cost: J = {:.3f}".format(mltools.cost(X, y, theta, rlambda = rlambda)))
 
 # compute gradient descent
-theta, J_history = mltools.descent(X, y, theta, alpha, iterations, lreg = lreg)
+theta, J_history = mltools.descent(X, y, theta, alpha, iterations, rlambda = rlambda)
 print("Theta found using gradient decent: {}".format(theta.T))
 
 # display final cost
 print("Final cost: J = {:.3f}".format(J_history[-1]))
 
 # normal equation
-theta_NEq = mltools.normalEqn(X, y)
-J_final = mltools.cost(X, y, theta_NEq)
-print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta_NEq.T))
+theta_norm = mltools.normalEqn(X, y)
+J_final = mltools.cost(X, y, theta_norm)
+print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta_norm.T))
 
 # now, let us see how well the learning algorithm did
-print("MPG for a disp of {}:  {}".format( 80, np.mat([1, ( 80 - mu)/sigma])*theta_NEq))
-print("MPG for a disp of {}:  {}".format(250, np.mat([1, (250 - mu)/sigma])*theta_NEq))
-print("MPG for a disp of {}:  {}".format(400, np.mat([1, (400 - mu)/sigma])*theta_NEq))
+predict = np.mat([80, 250, 400]).T
+predict = mltools.add_quadratic(predict, 0)
+predict = (predict - mu)/sigma
+predict = mltools.add_x0(predict)
+print("MPG for a disp of {}:  {}".format( 80, predict[0,:]*theta_norm))
+print("MPG for a disp of {}:  {}".format(250, predict[1,:]*theta_norm))
+print("MPG for a disp of {}:  {}".format(400, predict[2,:]*theta_norm))
 
 # ----------- Plots -----------
+# create continuous X variable
+xcont = np.mat(np.linspace(min(mtcars.disp), max(mtcars.disp), m)).T
+xquad = mltools.add_quadratic(xcont, 0)
+xquad = (xquad - mu)/sigma
+xquad = mltools.add_x0(xquad)
+
 # scatter and best fit
 fig, (ax1, ax2) = plt.subplots(nrows = 2, ncols = 1)
-ax1.scatter(X[:,1].A, y.A)
-ax1.plot(X[:,1].A, (X*theta).A, "g-", label = "descent")
-ax1.plot(X[:,1].A, (X*theta_NEq).A, "r-", label = "normal eq")
+ax1.scatter(np.array(mtcars.disp), y.A1)
+ax1.plot(xcont.A1, (xquad*theta).A1, "g-", label = "descent")
+ax1.plot(xcont.A1, (xquad*theta_norm).A1, "r-", label = "normal eq")
 ax1.legend(bbox_to_anchor=(1.05, 1), loc = 1, borderaxespad = 0.)
 ax1.set_ylabel("mpg")
 ax1.set_xlabel("disp")
@@ -71,8 +93,9 @@ fig.set_tight_layout(True)
 
 # cost-space contour and surface plots
 # intialize thetas
-theta0_vals = np.linspace(10, 30, 100)
-theta1_vals = np.linspace(-15, 5, 100)
+theta0_vals = np.linspace(theta_norm[0,0]-20, theta_norm[0,0]+20, 100)
+theta1_vals = np.linspace(theta_norm[1,0]-20, theta_norm[1,0]+20, 100)
+theta2_val = theta_norm[2,0]
 
 # intialize J values
 J_vals = np.zeros((len(theta0_vals), len(theta1_vals)))
@@ -80,8 +103,8 @@ J_vals = np.zeros((len(theta0_vals), len(theta1_vals)))
 # fill in J_val
 for ii in range(len(theta0_vals)):
     for jj in range(len(theta1_vals)):
-        t = np.mat([ theta0_vals[ii], theta1_vals[jj] ]).T
-        J_vals[ii,jj] = mltools.cost(X, y, t)
+            t = np.mat([ theta0_vals[ii], theta1_vals[jj], theta2_val ]).T
+            J_vals[ii,jj] = mltools.cost(X, y, t, rlambda = rlambda)
 
 # J_vals needs to be transposed
 J_vals = J_vals.T
@@ -90,7 +113,7 @@ J_vals = J_vals.T
 plt.figure()
 ctr = plt.contour(theta0_vals, theta1_vals, J_vals, np.logspace(-1, 2, 10))
 plt.clabel(ctr, inline = 1, fontsize = 10)
-plt.plot(theta_NEq[0,0], theta_NEq[1,0], 'rx', ms = 10, mew = 2)
+plt.plot(theta_norm[0,0], theta_norm[1,0], 'rx', ms = 10, mew = 2)
 plt.plot(theta[0,0], theta[1,0], 'bo')
 plt.xlabel(r"$\theta_0$")
 plt.ylabel(r"$\theta_1$")
@@ -107,8 +130,12 @@ surf = ax.plot_surface(theta0_vals, theta1_vals, J_vals, cmap = cm.coolwarm, ant
 plt.show()
 
 # use debug tools to explore variables before script terminates
-#pdb.set_trace()
+pdb.set_trace()
 
 # Discussion
-#   Interestingly, without featrure normalization, gradient descent fails to descend in the 
+# 1D:
+#   Without featrure normalization, gradient descent fails to descend in the 
 #   direction of the optimal theta0.
+# Quadratic:
+#   Decent gets close to the optimal theta, but ultimately fails to take
+#   advantage of its quadratic term...
