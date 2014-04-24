@@ -3,10 +3,10 @@ Machine Learning Tools
 Purpose: to provide simple ML algorithm coding examples using Python and R
 
 TODO:
+- improve gradient descent fit in example 1
 - add mtcars logistic regression example, classifying cyl off of mpg and displ
+- add advanced gradient methods
+- use cross-validation in order to compute fit error
 - organize regression/classification methods into different classes
-- test regularization in both descent and the normal equation
 - write plot routines in ggplot as well
-- add advanced linear regression methods
-- organize regression/classification methods into different modules
 - write mltools methods in R
