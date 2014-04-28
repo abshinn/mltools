@@ -24,7 +24,8 @@ X = np.mat(mtcars.values[:,[3,1]], dtype = float)
 y = np.mat(mtcars.cyl.values, dtype = float).T
 
 # one vs all: choose 8 cylinders to be 1, else 0
-y = (y == 8.0) + 0.0
+y = (y == 6.0)
+y = y.astype(int)
 
 # add bias feature and polynomial features
 degree = 2
@@ -44,22 +45,18 @@ initial_theta = np.mat(np.zeros(X.shape[1])).T
 
 # ----------- Gradient Descent ------------
 # regularization parameter
-rlambda = 50.
+rlambda = 0.
 
 # compute initial cost
-cost, grad = mltools.LRcost(initial_theta, X, y, rlambda)
+cost = mltools.LRcost(initial_theta, X, y, rlambda)
 print("Initial cost = {}".format(cost))
-#print("Initial gradient:\n{}".format(grad))
 
 m, n = X.shape
 
-# note: duplicated effort, need to separate cost and gradient into two different functions
 def decorateCost(theta):
-    cost, grad = mltools.LRcost(theta, X, y, rlambda)
-    return cost
+    return mltools.LRcost(theta, X, y, rlambda)
 def decorateGrad(theta):
-    cost, grad = mltools.LRcost(theta, X, y, rlambda)
-    return grad
+    return mltools.LRgrad(theta, X, y, rlambda)
 
 # optimize
 #theta = fmin_bfgs(decorateCost, fprime = decorateGrad, x0 = initial_theta, maxiter = 400)
@@ -76,19 +73,21 @@ for t in all_theta:
 
 # calculate prediction efficiency
 predict = np.round(mltools.sigmoid(X*theta))
-print (predict == y).mean()*100
+print("Prediction accuracy = {}".format((predict == y).mean()*100))
+detect = predict[np.where(y)]
+print(" Detection accuracy = {}".format(detect.sum()/detect.size*100))
 
 # scatter ggplot
-mtcars.cyl = mtcars.cyl.astype(str) # changes cyl to a discrete value
-point = gg.ggplot(mtcars, gg.aes("disp", "mpg", colour = "cyl")) + gg.geom_point(size = 35)
-print point
+#mtcars.cyl = mtcars.cyl.astype(str) # changes cyl to a discrete value
+#point = gg.ggplot(mtcars, gg.aes("disp", "mpg", colour = "cyl")) + gg.geom_point(size = 35)
+#print point
 
 # scatter pyplot
-cyl46 = np.where(y.A1 == 0)
-cyl8  = np.where(y.A1 == 1)
+neg = np.where(y.A1 == 0)
+pos = np.where(y.A1 == 1)
 fig, ax = plt.subplots()
-ax.plot(X_prenorm[cyl46, 1].A, X_prenorm[cyl46, 2].A, "ko", markerfacecolor = "b", markersize = 7, label = "cyl4")
-ax.plot(X_prenorm[cyl8 , 1].A, X_prenorm[cyl8 , 2].A, "ko", markerfacecolor = "r", markersize = 7, label = "cyl6")
+ax.plot(X_prenorm[neg, 1].A, X_prenorm[neg, 2].A, "ko", markerfacecolor = "b", markersize = 7, label = "cyl4")
+ax.plot(X_prenorm[pos, 1].A, X_prenorm[pos, 2].A, "ko", markerfacecolor = "r", markersize = 7, label = "cyl6")
 ax.set_xlabel("disp")
 ax.set_ylabel("mpg")
 
@@ -116,7 +115,7 @@ z = mltools.sigmoid(z)
 
 # contour plot
 ax.contourf(u, v, z, [.5, 1], colors = "0.9")
-ax.set_title(r"Detecting 8 cylinders; $\lambda$ = {}; {}-degree polynomial".format(rlambda, degree))
+ax.set_title(r"Detecting 6 cylinders; $\lambda$ = {}; {}-degree polynomial".format(rlambda, degree))
 
 # show plot
 plt.show()

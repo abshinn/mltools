@@ -66,9 +66,17 @@ def LRcost(theta, X, y, rlambda = 0.):
     m, n = X.shape
     theta = np.copy(theta.reshape(n, 1))
     theta = np.matrix(theta)
+    H = sigmoid(X*theta) # hypothesis
+    cost = (-y.T * np.log(H) - (1 - y).T * np.log(1 - H) + rlambda*(theta[1:,:].T * theta[1:,:])/2.) / m
+    return cost.A.flatten()
+
+def LRgrad(theta, X, y, rlambda = 0.):
+    """logistic regression gradient"""
+    m, n = X.shape
+    theta = np.copy(theta.reshape(n, 1))
+    theta = np.matrix(theta)
     I = np.eye(n)
     I[0,0] = 0.
     H = sigmoid(X*theta) # hypothesis
-    cost = (-y.T * np.log(H) - (1 - y).T * np.log(1 - H) + rlambda*(theta[1:,:].T * theta[1:,:])/2.) / m
     grad = (X.T * (H - y) + rlambda*I*theta) / m
-    return cost.A.flatten(), grad.A.flatten()
+    return grad.A.flatten()
