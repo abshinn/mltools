@@ -8,7 +8,8 @@ Logistic regression example using mtcars data set:
 """
 
 import pdb
-import mltools
+import mlfeatures
+import mllogistic
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -29,16 +30,16 @@ y = y.astype(int)
 
 # add bias feature and polynomial features
 degree = 2
-X = mltools.polyfeatures(X[:,0], X[:,1], degree = degree)
+X = mlfeatures.polynomial(X[:,0], X[:,1], degree = degree)
 
 # save pre-normalized X
 X_prenorm = np.matrix.copy(X)
 
 # normalize features
-X, mu, sigma = mltools.featureNormalize(X[:,1:])
+X, mu, sigma = mlfeatures.normalize(X[:,1:])
 
 # add x0
-X = mltools.add_x0(X)
+X = mlfeatures.add_x0(X)
 
 # initialize fitting parameters, array of 0's
 initial_theta = np.mat(np.zeros(X.shape[1])).T
@@ -48,15 +49,15 @@ initial_theta = np.mat(np.zeros(X.shape[1])).T
 rlambda = 0.
 
 # compute initial cost
-cost = mltools.LRcost(initial_theta, X, y, rlambda)
+cost = mllogistic.cost(initial_theta, X, y, rlambda)
 print("Initial cost = {}".format(cost))
 
 m, n = X.shape
 
 def decorateCost(theta):
-    return mltools.LRcost(theta, X, y, rlambda)
+    return mllogistic.cost(theta, X, y, rlambda)
 def decorateGrad(theta):
-    return mltools.LRgrad(theta, X, y, rlambda)
+    return mllogistic.grad(theta, X, y, rlambda)
 
 # optimize
 #theta = fmin_bfgs(decorateCost, fprime = decorateGrad, x0 = initial_theta, maxiter = 400)
@@ -72,15 +73,16 @@ for t in all_theta:
     print(decorateCost(t))
 
 # calculate prediction efficiency
-predict = np.round(mltools.sigmoid(X*theta))
+predict = np.round(mllogistic.sigmoid(X*theta))
 print("Prediction accuracy = {}".format((predict == y).mean()*100))
 detect = predict[np.where(y)]
 print(" Detection accuracy = {}".format(detect.sum()/detect.size*100))
 
-# scatter ggplot
-#mtcars.cyl = mtcars.cyl.astype(str) # changes cyl to a discrete value
-#point = gg.ggplot(mtcars, gg.aes("disp", "mpg", colour = "cyl")) + gg.geom_point(size = 35)
-#print point
+if False:
+    # scatter ggplot
+    mtcars.cyl = mtcars.cyl.astype(str) # changes cyl to a discrete value
+    point = gg.ggplot(mtcars, gg.aes("disp", "mpg", colour = "cyl")) + gg.geom_point(size = 35)
+    print point
 
 # scatter pyplot
 neg = np.where(y.A1 == 0)
@@ -102,7 +104,7 @@ z = np.zeros(shape = (len(u), len(v)))
 # evaluate z = theta*x over the grid
 for ii in range(len(u)):
     for jj in range(len(v)):
-        uv_poly = mltools.polyfeatures(np.mat(u[ii]), np.mat(v[jj]), degree = degree)
+        uv_poly = mlfeatures.polynomial(np.mat(u[ii]), np.mat(v[jj]), degree = degree)
         uv_poly[0,1:] = (uv_poly[0,1:] - mu)/sigma
         z[ii,jj] = uv_poly*theta
 
@@ -111,7 +113,7 @@ z = z.T
 
 # turn z into probability function
 # (values above .5 are 1, otherwise 0)
-z = mltools.sigmoid(z)
+z = mllogistic.sigmoid(z)
 
 # contour plot
 ax.contourf(u, v, z, [.5, 1], colors = "0.9")
@@ -120,14 +122,22 @@ ax.set_title(r"Detecting 6 cylinders; $\lambda$ = {}; {}-degree polynomial".form
 # show plot
 plt.show()
 
-# explore namespace
-print("Exploring namespace...\ntype [c] or [cntrl-d] to exit")
-pdb.set_trace()
-
-discussion = """
+print("""
  TODO
- - explore lambda/degree space
- - train to identify other cylinders
- - find more data to improve learning algorithm?
-"""
-print(discussion)
+ - train parameters to identify other cylinders
+ - compare different optimization algorithms
+ - programmatically find ideal regularization parameter 
+
+ Discussion
+   Logistic regression with polynomial features can very easily differentiate cylinders in the mtcars
+   data set using mpg and disp (engine displacement). However, while there are many polynomials that
+   can fit the mtcars data to 100% accuracy, these decision boundaries may not accurately represent
+   other areas of the mpg-disp parameter space not currently populated by data (or even likely to be
+   populated by data). Although logistic regression can certainly do the job, it seems that a support
+   vector machine using kernels would be able to appropriately determine the decision boundaries in
+   this example.
+""")
+
+# explore namespace
+print("Exploring namespace using Pdb...\ntype [c] or [cntrl-d] to exit")
+pdb.set_trace()

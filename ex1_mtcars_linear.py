@@ -8,7 +8,8 @@ Linear regression example using mtcars data set:
 """
 
 import pdb
-import mltools
+import mlfeatures
+import mllinear
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -26,13 +27,13 @@ y = np.mat(mtcars.mpg.values, dtype = float).T
 m = len(y)
 
 # add x1*x1
-X = mltools.add_quadratic(X, 0)
+X = mlfeatures.add_quadratic(X, 0)
 
 # normalize disp and disp^2
-X, mu, sigma = mltools.featureNormalize(X)
+X, mu, sigma = mlfeatures.normalize(X)
 
 # add x0
-X = mltools.add_x0(X)
+X = mlfeatures.add_x0(X)
 
 # initialize fitting parameters, array of 0's
 theta = np.mat(np.zeros(X.shape[1])).T
@@ -44,25 +45,25 @@ alpha = 0.4
 rlambda = 0.0
 
 # compute initial cost
-print("Initial cost: J = {:.3f}".format(mltools.cost(X, y, theta, rlambda = rlambda)))
+print("Initial cost: J = {:.3f}".format(mllinear.cost(X, y, theta, rlambda = rlambda)))
 
 # compute gradient descent
-theta, J_history = mltools.descent(X, y, theta, alpha, iterations, rlambda = rlambda)
+theta, J_history = mllinear.descent(X, y, theta, alpha, iterations, rlambda = rlambda)
 print("Theta found using gradient decent: {}".format(theta.T))
 
 # display final cost
 print("Final cost: J = {:.3f}".format(J_history[-1]))
 
 # normal equation
-theta_norm = mltools.normalEqn(X, y)
-J_final = mltools.cost(X, y, theta_norm)
+theta_norm = mllinear.normalEqn(X, y)
+J_final = mllinear.cost(X, y, theta_norm)
 print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta_norm.T))
 
 # now, let us see how well the learning algorithm did
 predict = np.mat([80, 250, 400]).T
-predict = mltools.add_quadratic(predict, 0)
+predict = mlfeatures.add_quadratic(predict, 0)
 predict = (predict - mu)/sigma
-predict = mltools.add_x0(predict)
+predict = mlfeatures.add_x0(predict)
 print("MPG for a disp of {}:  {}".format( 80, predict[0,:]*theta_norm))
 print("MPG for a disp of {}:  {}".format(250, predict[1,:]*theta_norm))
 print("MPG for a disp of {}:  {}".format(400, predict[2,:]*theta_norm))
@@ -70,9 +71,9 @@ print("MPG for a disp of {}:  {}".format(400, predict[2,:]*theta_norm))
 # ----------- Plots -----------
 # create continuous X variable
 xcont = np.mat(np.linspace(min(mtcars.disp), max(mtcars.disp), m)).T
-xquad = mltools.add_quadratic(xcont, 0)
+xquad = mlfeatures.add_quadratic(xcont, 0)
 xquad = (xquad - mu)/sigma
-xquad = mltools.add_x0(xquad)
+xquad = mlfeatures.add_x0(xquad)
 
 # scatter and best fit
 fig, (ax1, ax2) = plt.subplots(nrows = 2, ncols = 1)
@@ -104,7 +105,7 @@ J_vals = np.zeros((len(theta0_vals), len(theta1_vals)))
 for ii in range(len(theta0_vals)):
     for jj in range(len(theta1_vals)):
             t = np.mat([ theta0_vals[ii], theta1_vals[jj], theta2_val ]).T
-            J_vals[ii,jj] = mltools.cost(X, y, t, rlambda = rlambda)
+            J_vals[ii,jj] = mllinear.cost(X, y, t, rlambda = rlambda)
 
 # J_vals needs to be transposed
 J_vals = J_vals.T
@@ -118,28 +119,27 @@ plt.plot(theta[0,0], theta[1,0], 'bo')
 plt.xlabel(r"$\theta_0$")
 plt.ylabel(r"$\theta_1$")
 
-# mesh grid for surface plot
-theta0_vals, theta1_vals = np.meshgrid(theta0_vals, theta1_vals)
+if False:
+    # mesh grid for surface plot
+    theta0_vals, theta1_vals = np.meshgrid(theta0_vals, theta1_vals)
 
-# surface plot
-fig2 = plt.figure(figsize = plt.figaspect(2.0))
-ax = fig2.add_subplot(1, 1, 1, projection = "3d")
-surf = ax.plot_surface(theta0_vals, theta1_vals, J_vals, cmap = cm.coolwarm, antialiased = False)
+    # surface plot
+    fig2 = plt.figure(figsize = plt.figaspect(2.0))
+    ax = fig2.add_subplot(1, 1, 1, projection = "3d")
+    surf = ax.plot_surface(theta0_vals, theta1_vals, J_vals, cmap = cm.coolwarm, antialiased = False)
 
 # show plots
 plt.show()
 
-# explore namespace
-print("Exploring namespace...\ntype [c] or [cntrl-d] to exit")
-pdb.set_trace()
-
-discussion = """
+print("""
 Discussion
 1D:
-  Without featrure normalization, gradient descent fails to descend in the 
-  direction of the optimal theta0.
+  Without featrure normalization, gradient descent fails to find the optimal theta.
 Quadratic:
   Descent gets close to the optimal theta, but ultimately fails to take
-  advantage of its quadratic term...
-"""
-print(discussion)
+  advantage of the quadratic term...
+""")
+
+# explore namespace
+print("Exploring namespace using Pdb...\ntype [c] or [cntrl-d] to exit")
+pdb.set_trace()
