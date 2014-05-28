@@ -40,6 +40,10 @@ def descentf(X, y, theta, num_iters, alpha = 0.01, rlambda = 0.):
 
 def normalEqn(X, y, rlambda = 0.):
     """the normal equation, returns theta"""
+    if np.linalg.det(X.T*X) == 0.:
+        # perhaps use a try/except down below so to not compute X.T*X twice
+        print("X.T*X is non-invertible")
+        return
     I = np.eye(X.shape[1])
     I[0,0] = 0.
     theta = (X.T*X - rlambda*I).I * X.T * y
