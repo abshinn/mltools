@@ -17,6 +17,9 @@ import seaborn as sns
 # from mpl_toolkits.mplot3d import Axes3D
 from ggplot import mtcars
 
+# set plot size
+plt.rcParams["figure.figsize"] = 16, 5
+
 # set print precision
 np.set_printoptions(precision = 3)
 
@@ -77,7 +80,7 @@ xquad = (xquad - mu)/sigma
 xquad = mlfeatures.add_x0(xquad)
 
 # scatter and best fit
-fig, (ax1, ax2) = plt.subplots(nrows = 2, ncols = 1)
+fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3)
 ax1.scatter(np.array(mtcars.disp), y.A1)
 ax1.plot(xcont.A1, (xquad*theta).A1, "g-", label = "descent")
 ax1.plot(xcont.A1, (xquad*theta_norm).A1, "r-", label = "normal eq")
@@ -112,13 +115,12 @@ for ii in range(len(theta0_vals)):
 J_vals = J_vals.T
 
 # contour plot
-plt.figure()
 ctr = plt.contour(theta0_vals, theta1_vals, J_vals, np.logspace(-1, 2, 10))
-plt.clabel(ctr, inline = 1, fontsize = 10)
-plt.plot(theta_norm[0,0], theta_norm[1,0], 'rx', ms = 10, mew = 2)
-plt.plot(theta[0,0], theta[1,0], 'bo')
-plt.xlabel(r"$\theta_0$")
-plt.ylabel(r"$\theta_1$")
+ax3.clabel(ctr, inline = 1, fontsize = 10)
+ax3.plot(theta_norm[0,0], theta_norm[1,0], 'rx', ms = 10, mew = 2)
+ax3.plot(theta[0,0], theta[1,0], 'bo')
+ax3.set_xlabel(r"$\theta_0$")
+ax3.set_ylabel(r"$\theta_1$")
 
 # if False:
 #     # mesh grid for surface plot
