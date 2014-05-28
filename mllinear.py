@@ -2,20 +2,29 @@
 
 import numpy as np
 
-def hypothesis(X, theta):
+def hyp(X, theta):
     """linear regression hypothesis"""
     return X*theta
 
-def cost(X, y, theta, rlambda = 0.):
+def costf(X, y, theta, rlambda = 0., hypothesis = hyp):
     """linear regression cost function"""
-    m = len(y)
+    m, n = X.shape
     H = hypothesis(X, theta)
-    J = ( (H - y).T * (H - y) + rlambda*(theta[1:,:].T * theta[1:,:]) ) / (2.*m)
+    J = ( (H - y).T * (H - y) + rlambda*(theta[1:,0].T * theta[1:,0]) ) / (2.*m)
     return J[0,0] # return single value
 
-def descent(X, y, theta, alpha, num_iters, rlambda = 0.):
+def gradientf(X, y, theta, alpha = 0.01, rlambda = 0., hypothesis = hyp):
+    """gradient of linear regression cost function"""
+    m, n = X.shape
+    theta_reg = np.matrix.copy(theta)
+    theta_reg[0,0] = 0.
+    H = hypothesis(X, theta)
+    grad = -alpha * ( X.T*(H - y) - rlambda*theta_reg) / m
+    return grad
+
+def descentf(X, y, theta, num_iters, alpha = 0.01, rlambda = 0.):
     """compute gradient descent"""
-    m = len(y)
+    m, n = X.shape
     J_history = np.zeros(num_iters)
     grad = np.matrix.copy(theta)
     for ii in range(num_iters):
@@ -35,3 +44,33 @@ def normalEqn(X, y, rlambda = 0.):
     I[0,0] = 0.
     theta = (X.T*X - rlambda*I).I * X.T * y
     return theta
+
+
+class Descent(object):
+    """Descent
+    instantiate with
+        X: m x n numpy matrix where m is the number of observations
+           and n is the number of features including the bias feature
+        y: m x 1 numpy matrix of y values for every observation
+    """
+    def __init__(self, X, y):
+        # to add: check if matrices
+        self.X = X
+        self.y = y
+        self.theta = np.mat(np.zeros((3,1)))
+        self.cost_history = []
+
+    def cost(self, rlambda = 0.):
+        """regularized cost"""
+        return costf(self.X, self.y, self.theta, rlambda = rlambda)
+
+    def update(self, alpha = 0.01, rlambda = 0.):
+        """update regularized gradient: return gradient given instance theta"""
+        return gradientf(self.X, self.y, self.theta, alpha = alpha, rlambda = rlambda)
+
+    def run(self, alpha = 0.01, rlambda = 0., iterations = 1000):
+        """run gradient descent: change theta instance variable"""
+        for ii in xrange(iterations):
+            self.theta += self.update(alpha = alpha, rlambda = rlambda)
+            self.cost_history.append(self.cost(rlambda = rlambda))
+        return (self.theta, self.cost_history)
