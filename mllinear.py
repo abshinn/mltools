@@ -58,7 +58,10 @@ class Descent(object):
         y: m x 1 numpy matrix of y values for every observation
     """
     def __init__(self, X, y):
-        # to add: check if matrices
+        if type(X) != np.matrixlib.defmatrix.matrix:
+            raise TypeError("warning: X not a numpy matrix")
+        if type(y) != np.matrixlib.defmatrix.matrix:
+            raise TypeError("warning: y not a numpy matrix")
         self.X = X
         self.y = y
         self.theta = np.mat(np.zeros((3,1)))
