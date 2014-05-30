@@ -59,7 +59,8 @@ print("Theta found using gradient decent: {}".format( theta.T ))
 print("Final cost: J = {:.3f}".format(J_history[-1]))
 
 # normal equation
-theta_norm = mllinear.normalEqn(X, y)
+Norm = mllinear.Ridge()
+theta_norm = Norm.run(X, y)
 J_final = mllinear.costf(X, y, theta_norm)
 print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, theta_norm.T))
 
