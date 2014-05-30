@@ -50,6 +50,29 @@ def normalEqn(X, y, rlambda = 0.):
     return theta
 
 
+class Ridge(object):
+    """Normal Equation with Ridge regularization
+    instantiate with:
+        rlambda: the regularization parameter
+                 default is 0 (no regularization) 
+    """
+    def __init__(self, rlambda = 0.):
+        self.rlambda = rlambda
+
+    def run(self, X, y):
+        Identity = np.eye(X.shape[1])
+        Identity[0,0] = 0. # bias feature is not scaled with lambda
+
+        try:
+            self.theta = (X.T*X - self.rlambda*Identity).I * X.T * y
+        except LinAlgError as LAEmsg:
+            print(LAEmsg)
+            print("det(X.T*X) = {}".format(np.linalg.det(X.T*X)))
+            self.theta = None
+
+        return self.theta
+
+
 class Descent(object):
     """Descent
     instantiate with
