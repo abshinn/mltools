@@ -24,17 +24,15 @@ plt.rcParams["figure.figsize"] = 16, 5
 np.set_printoptions(precision = 3)
 
 # let us pick mpg to be y so that we can use regression to guess the mpg given disp
-X = np.mat(mtcars.disp.values, dtype = float).T
 y = np.mat(mtcars.mpg.values, dtype = float).T
+data = mlfeatures.Feature( np.mat(mtcars.disp.values, dtype = float).T )
 
-# add x1*x1
-X = mlfeatures.add_quadratic(X, 0)
+# add x1*x1, normalize, and add bias
+data.add_quadratic(col = 0)
+data.normalize()
+data.add_bias()
 
-# normalize disp and disp^2
-X, mu, sigma = mlfeatures.normalize(X)
-
-# add x0
-X = mlfeatures.add_x0(X)
+X = data.get_X()
 
 # shape of X
 m, n = X.shape
@@ -67,7 +65,7 @@ print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, thet
 # now, let us see how well the learning algorithm did
 predict = np.mat([80, 250, 400]).T
 predict = mlfeatures.add_quadratic(predict, 0)
-predict = (predict - mu)/sigma
+predict = (predict - data.mu)/data.sigma
 predict = mlfeatures.add_x0(predict)
 print("MPG for a disp of {}:  {}".format( 80, predict[0,:]*theta_norm))
 print("MPG for a disp of {}:  {}".format(250, predict[1,:]*theta_norm))
@@ -76,9 +74,9 @@ print("MPG for a disp of {}:  {}".format(400, predict[2,:]*theta_norm))
 # ----------- Plots -----------
 # create continuous X variable
 xcont = np.mat(np.linspace(min(mtcars.disp), max(mtcars.disp), m)).T
-xquad = mlfeatures.add_quadratic(xcont, 0)
-xquad = (xquad - mu)/sigma
-xquad = mlfeatures.add_x0(xquad)
+xquad = np.c_[ xcont, np.multiply(xcont, xcont) ]
+xquad = (xquad - data.mu)/data.sigma
+xquad = np.c_[ np.ones(len(xcont)), xquad ] 
 
 # scatter and best fit
 fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3)
