@@ -64,9 +64,9 @@ print("Cost, theta found using normal equation: {:.3f}, {}".format(J_final, thet
 
 # now, let us see how well the learning algorithm did
 predict = np.mat([80, 250, 400]).T
-predict = mlfeatures.add_quadratic(predict, 0)
+predict = np.c_[ predict, np.multiply(predict, predict) ]
 predict = (predict - data.mu)/data.sigma
-predict = mlfeatures.add_x0(predict)
+predict = np.c_[ np.ones(len(predict)), predict ]
 print("MPG for a disp of {}:  {}".format( 80, predict[0,:]*theta_norm))
 print("MPG for a disp of {}:  {}".format(250, predict[1,:]*theta_norm))
 print("MPG for a disp of {}:  {}".format(400, predict[2,:]*theta_norm))

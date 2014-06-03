@@ -32,8 +32,8 @@ class Feature(object):
         X_norm = np.matrix.copy(self.X)
         self.mu = X_norm.mean(axis = 0)
         self.sigma = X_norm.std(axis = 0)
-        X_norm = X_norm - mu
-        X_norm = X_norm/sigma
+        X_norm = X_norm - self.mu
+        X_norm = X_norm/self.sigma
         self.X = X_norm
 
     def polynomial(self, col1, col2, degree = 6):
